@@ -1,8 +1,8 @@
 {
   "Name": "Deliveroo",
   "Author": "Liza Carvelli",
-  "Punchline": "Better Grand Company Deliveries",
-  "Description": "",
+  "Punchline": "更方便的軍隊籌備任務繳納",
+  "Description": "自動繳納軍隊籌備物資，並依設定使用軍票購買物品。",
   "RepoUrl": "https://github.com/cycleapple/Deliveroo",
   "IconUrl": "https://raw.githubusercontent.com/cycleapple/Deliveroo/api13-tw/Deliveroo/Deliveroo.png"
 }

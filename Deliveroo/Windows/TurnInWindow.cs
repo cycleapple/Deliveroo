@@ -44,7 +44,7 @@ internal sealed class TurnInWindow : LWindow, IPersistableWindowConfig<Configura
         InventoryType.EquippedItems
     }.AsReadOnly();
 
-    private static readonly string[] StockingTypeLabels = { "Purchase Once", "Keep in Stock" };
+    private static readonly string[] StockingTypeLabels = { "購買一次", "維持庫存" };
 
     private readonly DeliverooPlugin _plugin;
     private readonly IDalamudPluginInterface _pluginInterface;
@@ -64,7 +64,7 @@ internal sealed class TurnInWindow : LWindow, IPersistableWindowConfig<Configura
     public TurnInWindow(DeliverooPlugin plugin, IDalamudPluginInterface pluginInterface, Configuration configuration,
         ICondition condition, IClientState clientState, GcRewardsCache gcRewardsCache, ConfigWindow configWindow,
         IconCache iconCache, IKeyState keyState, GameFunctions gameFunctions)
-        : base("GC Delivery###DeliverooTurnIn")
+        : base("軍隊籌備任務###DeliverooTurnIn")
     {
         _plugin = plugin;
         _pluginInterface = pluginInterface;
@@ -113,7 +113,7 @@ internal sealed class TurnInWindow : LWindow, IPersistableWindowConfig<Configura
             ShowTooltip = () =>
             {
                 ImGui.BeginTooltip();
-                ImGui.Text("Open Configuration");
+                ImGui.Text("開啟設定");
                 ImGui.EndTooltip();
             }
         });
@@ -224,7 +224,7 @@ internal sealed class TurnInWindow : LWindow, IPersistableWindowConfig<Configura
         if (_gameFunctions.GetGrandCompanyRank() < 6)
         {
             State = false;
-            ImGui.TextColored(ImGuiColors.DalamudRed, "You do not have the required rank for Expert Delivery.");
+            ImGui.TextColored(ImGuiColors.DalamudRed, "你的軍階尚未達到開放稀有品籌備所需的條件。");
 
             DrawNextRankPrequesites();
             return;
@@ -233,12 +233,12 @@ internal sealed class TurnInWindow : LWindow, IPersistableWindowConfig<Configura
                  !IsOnHomeWorld)
         {
             State = false;
-            ImGui.TextColored(ImGuiColors.DalamudRed, "Turn-in disabled, you are not on your home world.");
+            ImGui.TextColored(ImGuiColors.DalamudRed, "目前不在所屬世界，已停用繳納。");
             return;
         }
 
         bool state = State;
-        if (ImGui.Checkbox("Handle GC turn ins/exchange automatically", ref state))
+        if (ImGui.Checkbox("自動處理軍隊物資繳納與交換", ref state))
         {
             State = state;
         }
@@ -257,16 +257,16 @@ internal sealed class TurnInWindow : LWindow, IPersistableWindowConfig<Configura
                     !IsOnHomeWorld)
                 {
                     ImGui.TextColored(ImGuiColors.DalamudRed,
-                        "You are not on your home world and will not earn FC points.");
+                        "目前不在所屬世界，無法獲得部隊點數。");
                 }
 
                 if (Multiplier == 1m)
                 {
-                    ImGui.TextColored(ImGuiColors.DalamudYellow, "You do not have an active seal buff.");
+                    ImGui.TextColored(ImGuiColors.DalamudYellow, "目前沒有軍票加成效果。");
                 }
                 else
                 {
-                    ImGui.TextColored(ImGuiColors.HealerGreen, $"Current Buff: {(Multiplier - 1m) * 100:N0}%%");
+                    ImGui.TextColored(ImGuiColors.HealerGreen, $"目前加成：{(Multiplier - 1m) * 100:N0}%%");
                 }
 
                 if (Multiplier <= 1.10m)
@@ -279,7 +279,7 @@ internal sealed class TurnInWindow : LWindow, IPersistableWindowConfig<Configura
                                             _condition[ConditionFlag.Casting] ||
                                             agentInventoryContext == null);
                         if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.Bolt,
-                                "Use Priority Seal Allowance (15%)"))
+                                "使用軍用優先票（15%）"))
                         {
                             agentInventoryContext->UseItem(ItemIds.PrioritySealAllowance);
                         }
@@ -309,19 +309,19 @@ internal sealed class TurnInWindow : LWindow, IPersistableWindowConfig<Configura
             if (!State && _keyState[_configuration.QuickTurnInKey])
             {
                 ImGui.Separator();
-                ImGui.TextColored(ImGuiColors.HealerGreen, "Click an item to turn it in without confirmation");
+                ImGui.TextColored(ImGuiColors.HealerGreen, "點擊物品即可略過確認並繳納");
             }
             else if (!IsMinimized)
             {
                 ImGui.Separator();
-                ImGui.Text($"Hold '{key}' when clicking an item to turn it in without confirmation.");
+                ImGui.Text($"點擊物品時按住「{key}」可略過確認並繳納。");
             }
         }
 
         if (!IsMinimized)
         {
             ImGui.Separator();
-            ImGui.Text($"Debug (State): {_plugin.CurrentStage}");
+            ImGui.Text($"除錯（狀態）：{_plugin.CurrentStage}");
         }
     }
 
@@ -342,15 +342,15 @@ internal sealed class TurnInWindow : LWindow, IPersistableWindowConfig<Configura
             bool enoughHuntingLog = currentHuntingLog >= requiredHuntingLog;
 
             if (enoughSeals && enoughHuntingLog)
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"You meet all requirements to rank up to {rankName}.");
+                ImGui.TextColored(ImGuiColors.HealerGreen, $"已滿足晉升至「{rankName}」的所有條件。");
             else
-                ImGui.Text($"Ranking up to {rankName} requires:");
+                ImGui.Text($"晉升至「{rankName}」需要：");
 
             ImGui.Indent();
             if (enoughSeals)
             {
                 ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.HealerGreen);
-                ImGui.BulletText($"{currentSeals:N0} / {requiredSeals:N0} GC seals");
+                ImGui.BulletText($"{currentSeals:N0} / {requiredSeals:N0} 軍票");
                 ImGui.PopStyleColor();
             }
             else
@@ -361,11 +361,11 @@ internal sealed class TurnInWindow : LWindow, IPersistableWindowConfig<Configura
                 if (enoughHuntingLog)
                 {
                     ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.HealerGreen);
-                    ImGui.BulletText($"Complete Hunting Log #{requiredHuntingLog}");
+                    ImGui.BulletText($"完成討伐筆記第 {requiredHuntingLog} 階段");
                     ImGui.PopStyleColor();
                 }
                 else
-                    ImGui.BulletText($"Complete Hunting Log #{requiredHuntingLog}");
+                    ImGui.BulletText($"完成討伐筆記第 {requiredHuntingLog} 階段");
             }
 
             ImGui.Unindent();
@@ -375,7 +375,7 @@ internal sealed class TurnInWindow : LWindow, IPersistableWindowConfig<Configura
     private void DrawItemsToBuy(GrandCompany grandCompany)
     {
         var itemsWrapper = ItemsWrapper;
-        ImGui.Text($"Items to buy ({itemsWrapper.Name}):");
+        ImGui.Text($"要購買的物品（{itemsWrapper.Name}）：");
 
         List<(GcRewardItem Item, string NameWithoutRetainers, string NameWithRetainers)> comboValues = new()
         {
@@ -456,7 +456,7 @@ internal sealed class TurnInWindow : LWindow, IPersistableWindowConfig<Configura
         if (_configuration.ItemsAvailableToPurchase.Any(x =>
                 itemsWrapper.GetItemsToPurchase().All(y => x.ItemId != y.ItemId)))
         {
-            if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.Plus, "Add Item"))
+            if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.Plus, "新增物品"))
                 ImGui.OpenPopup("##AddItem");
 
             if (ImGui.BeginPopupContextItem("##AddItem", ImGuiPopupFlags.NoOpenOverItems))
@@ -481,7 +481,7 @@ internal sealed class TurnInWindow : LWindow, IPersistableWindowConfig<Configura
             ImGui.SameLine();
         }
 
-        if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.Cog, "Configure available Items"))
+        if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.Cog, "設定可購買物品"))
             _configWindow.IsOpen = true;
     }
 
@@ -510,7 +510,7 @@ internal sealed class TurnInWindow : LWindow, IPersistableWindowConfig<Configura
 
         if (ImGui.BeginPopup($"Configure{i}"))
         {
-            if (ImGui.Checkbox($"Enabled##Enabled{i}", ref enabled))
+            if (ImGui.Checkbox($"啟用##Enabled{i}", ref enabled))
             {
                 item.Enabled = enabled;
                 itemsWrapper.Save();
@@ -529,7 +529,7 @@ internal sealed class TurnInWindow : LWindow, IPersistableWindowConfig<Configura
             if (item.Type == Configuration.PurchaseType.KeepStocked && item.ItemId != ItemIds.Venture)
             {
                 bool checkRetainerInventory = item.CheckRetainerInventory;
-                if (ImGui.Checkbox("Check Retainer Inventory for items (requires AllaganTools)",
+                if (ImGui.Checkbox("同時檢查僱員物品欄（需要 AllaganTools）",
                         ref checkRetainerInventory))
                 {
                     item.CheckRetainerInventory = checkRetainerInventory;

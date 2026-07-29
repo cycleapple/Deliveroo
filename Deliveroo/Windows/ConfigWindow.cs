@@ -33,7 +33,7 @@ internal sealed class ConfigWindow : LWindow, IPersistableWindowConfig
 
     private readonly List<(VirtualKey Key, string Label)> _keyCodes =
     [
-        (VirtualKey.NO_KEY, "Disabled"),
+        (VirtualKey.NO_KEY, "停用"),
         (VirtualKey.CONTROL, "CTRL"),
         (VirtualKey.SHIFT, "SHIFT"),
         (VirtualKey.MENU, "ALT"),
@@ -45,7 +45,7 @@ internal sealed class ConfigWindow : LWindow, IPersistableWindowConfig
     public ConfigWindow(IDalamudPluginInterface pluginInterface, DeliverooPlugin plugin, Configuration configuration,
         GcRewardsCache gcRewardsCache, IClientState clientState, IPluginLog pluginLog, IconCache iconCache,
         GameFunctions gameFunctions)
-        : base("Deliveroo - Configuration###DeliverooConfig")
+        : base("Deliveroo－設定###DeliverooConfig")
     {
         _pluginInterface = pluginInterface;
         _plugin = plugin;
@@ -87,7 +87,7 @@ internal sealed class ConfigWindow : LWindow, IPersistableWindowConfig
 
     private unsafe void DrawBuyList()
     {
-        if (ImGui.BeginTabItem("Items for Auto-Buy"))
+        if (ImGui.BeginTabItem("自動購買物品"))
         {
             Configuration.PurchaseOption? itemToRemove = null;
             Configuration.PurchaseOption? itemToAdd = null;
@@ -144,14 +144,14 @@ internal sealed class ConfigWindow : LWindow, IPersistableWindowConfig
                         if (ImGui.BeginPopup($"###ctx{i}"))
                         {
                             bool sameQuantityForAllLists = purchaseOption.SameQuantityForAllLists;
-                            if (ImGui.MenuItem("Use same quantity for global and character-specific lists",
+                            if (ImGui.MenuItem("全域與角色專用清單使用相同數量",
                                     ref sameQuantityForAllLists))
                             {
                                 purchaseOption.SameQuantityForAllLists = sameQuantityForAllLists;
                                 Save();
                             }
 
-                            if (ImGui.MenuItem($"Remove {_itemLookup[purchaseOption.ItemId].Name}"))
+                            if (ImGui.MenuItem($"移除 {_itemLookup[purchaseOption.ItemId].Name}"))
                                 itemToRemove = purchaseOption;
 
                             ImGui.EndPopup();
@@ -193,10 +193,10 @@ internal sealed class ConfigWindow : LWindow, IPersistableWindowConfig
                 .ThenBy(x => x.GetHashCode())
                 .ToList();
 
-            if (ImGui.BeginCombo($"##ItemSelection", "Add Item...", ImGuiComboFlags.HeightLarge))
+            if (ImGui.BeginCombo($"##ItemSelection", "新增物品……", ImGuiComboFlags.HeightLarge))
             {
                 ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
-                bool addFirst = ImGui.InputTextWithHint("", "Filter...", ref _searchString, 256,
+                bool addFirst = ImGui.InputTextWithHint("", "篩選……", ref _searchString, 256,
                     ImGuiInputTextFlags.AutoSelectAll | ImGuiInputTextFlags.EnterReturnsTrue);
 
                 foreach (var item in comboValues.Where(x =>
@@ -239,13 +239,13 @@ internal sealed class ConfigWindow : LWindow, IPersistableWindowConfig
 
     private void DrawCharacterSpecificSettings()
     {
-        if (ImGui.BeginTabItem("Character Settings"))
+        if (ImGui.BeginTabItem("角色設定"))
         {
             if (_clientState is { IsLoggedIn: true, LocalContentId: > 0 })
             {
                 string currentCharacterName = _clientState.LocalPlayer!.Name.ToString();
                 string currentWorldName = _clientState.LocalPlayer.HomeWorld.Value.Name.ToString();
-                ImGui.Text($"Current Character: {currentCharacterName} @ {currentWorldName}");
+                ImGui.Text($"目前角色：{currentCharacterName} @ {currentWorldName}");
                 ImGui.Spacing();
                 ImGui.Separator();
                 ImGui.Spacing();
@@ -254,7 +254,7 @@ internal sealed class ConfigWindow : LWindow, IPersistableWindowConfig
                 if (charConfiguration != null)
                 {
                     bool disableForCharacter = charConfiguration.DisableForCharacter;
-                    if (ImGui.Checkbox("Disable plugin for this character", ref disableForCharacter))
+                    if (ImGui.Checkbox("對此角色停用插件", ref disableForCharacter))
                     {
                         charConfiguration.DisableForCharacter = disableForCharacter;
                         charConfiguration.Save(_pluginInterface);
@@ -263,7 +263,7 @@ internal sealed class ConfigWindow : LWindow, IPersistableWindowConfig
                     ImGui.BeginDisabled(charConfiguration.DisableForCharacter);
 
                     bool overrideItemsToPurchase = charConfiguration.OverrideItemsToPurchase;
-                    if (ImGui.Checkbox("Use custom purchase list for this character", ref overrideItemsToPurchase))
+                    if (ImGui.Checkbox("此角色使用自訂購買清單", ref overrideItemsToPurchase))
                     {
                         charConfiguration.OverrideItemsToPurchase = overrideItemsToPurchase;
                         charConfiguration.Save(_pluginInterface);
@@ -274,7 +274,7 @@ internal sealed class ConfigWindow : LWindow, IPersistableWindowConfig
                          charConfiguration.ItemsToPurchase[0].ItemId != GcRewardItem.None.ItemId))
                     {
                         ImGui.SameLine();
-                        if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.Trash, "Clear"))
+                        if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.Trash, "清除"))
                         {
                             charConfiguration.ItemsToPurchase.Clear();
                             charConfiguration.Save(_pluginInterface);
@@ -282,7 +282,7 @@ internal sealed class ConfigWindow : LWindow, IPersistableWindowConfig
                     }
 
                     bool useHideArmouryChestItemsFilter = charConfiguration.UseHideArmouryChestItemsFilter;
-                    if (ImGui.Checkbox("Use 'Hide Armoury Chest Items' filter", ref useHideArmouryChestItemsFilter))
+                    if (ImGui.Checkbox("使用「隱藏兵裝庫物品」篩選器", ref useHideArmouryChestItemsFilter))
                     {
                         charConfiguration.UseHideArmouryChestItemsFilter = useHideArmouryChestItemsFilter;
                         charConfiguration.Save(_pluginInterface);
@@ -293,7 +293,7 @@ internal sealed class ConfigWindow : LWindow, IPersistableWindowConfig
                         "The default filter for all characters is 'Hide Gear Set Items', but you may want to override this to hide all Armoury Chest items (regardless of whether they're part of a gear set) e.g. for your main character.");
 
                     bool ignoreMinimumSealsToKeep = charConfiguration.IgnoreMinimumSealsToKeep;
-                    if (ImGui.Checkbox("Ignore 'Minimum Seals to keep' setting", ref ignoreMinimumSealsToKeep))
+                    if (ImGui.Checkbox("忽略「保留的最低軍票數量」設定", ref ignoreMinimumSealsToKeep))
                     {
                         charConfiguration.IgnoreMinimumSealsToKeep = ignoreMinimumSealsToKeep;
                         charConfiguration.Save(_pluginInterface);
@@ -310,7 +310,7 @@ internal sealed class ConfigWindow : LWindow, IPersistableWindowConfig
 
                     ImGui.BeginDisabled(!ImGui.GetIO().KeyCtrl);
                     if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.PersonCircleMinus,
-                            "Remove character-specific settings"))
+                            "移除角色專用設定"))
                     {
                         charConfiguration.Delete(_pluginInterface);
                         _plugin.CharacterConfiguration = null;
@@ -325,7 +325,7 @@ internal sealed class ConfigWindow : LWindow, IPersistableWindowConfig
                 {
                     // no settings
                     if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.PersonCirclePlus,
-                            "Enable character-specific settings"))
+                            "啟用角色專用設定"))
                     {
                         _plugin.CharacterConfiguration = new()
                         {
@@ -341,7 +341,7 @@ internal sealed class ConfigWindow : LWindow, IPersistableWindowConfig
             }
             else
             {
-                ImGui.Text("You are not currently logged in.");
+                ImGui.Text("目前尚未登入。");
             }
 
             ImGui.EndTabItem();
@@ -350,11 +350,11 @@ internal sealed class ConfigWindow : LWindow, IPersistableWindowConfig
 
     private void DrawAdditionalSettings()
     {
-        if (ImGui.BeginTabItem("Additional Settings"))
+        if (ImGui.BeginTabItem("其他設定"))
         {
             ImGui.SetNextItemWidth(ImGuiHelpers.GlobalScale * 120);
             int reservedSealCount = _configuration.ReservedSealCount;
-            if (ImGui.InputInt("Minimum Seals to keep (e.g. for Squadron Missions)", ref reservedSealCount, 1000))
+            if (ImGui.InputInt("保留的最低軍票數量（例如分隊任務）", ref reservedSealCount, 1000))
             {
                 _configuration.ReservedSealCount =
                     Math.Max(0, Math.Min((int)_gameFunctions.MaxSealCap, reservedSealCount));
@@ -363,7 +363,7 @@ internal sealed class ConfigWindow : LWindow, IPersistableWindowConfig
 
             ImGui.BeginDisabled(reservedSealCount <= 0);
             bool reserveDifferentSealCountAtMaxRank = _configuration.ReserveDifferentSealCountAtMaxRank;
-            if (ImGui.Checkbox("Use a different amount at max rank", ref reserveDifferentSealCountAtMaxRank))
+            if (ImGui.Checkbox("最高軍階時使用不同數量", ref reserveDifferentSealCountAtMaxRank))
             {
                 _configuration.ReserveDifferentSealCountAtMaxRank = reserveDifferentSealCountAtMaxRank;
                 Save();
@@ -375,7 +375,7 @@ internal sealed class ConfigWindow : LWindow, IPersistableWindowConfig
                 ImGui.Indent(indentSize);
                 ImGui.SetNextItemWidth(ImGuiHelpers.GlobalScale * 100);
                 int reservedSealCountAtMaxRank = _configuration.ReservedSealCountAtMaxRank;
-                if (ImGui.InputInt("Minimum seals to keep at max rank", ref reservedSealCountAtMaxRank))
+                if (ImGui.InputInt("最高軍階時保留的最低軍票數量", ref reservedSealCountAtMaxRank))
                 {
                     _configuration.ReservedSealCountAtMaxRank = Math.Max(0,
                         Math.Min((int)_gameFunctions.MaxSealCap, reservedSealCountAtMaxRank));
@@ -389,7 +389,7 @@ internal sealed class ConfigWindow : LWindow, IPersistableWindowConfig
 
             ImGui.SetNextItemWidth(ImGuiHelpers.GlobalScale * 120);
             int selectedKey = Math.Max(0, _keyCodes.FindIndex(x => x.Key == _configuration.QuickTurnInKey));
-            if (ImGui.Combo("Quick Turn-In Key", ref selectedKey, _keyCodes.Select(x => x.Label).ToArray(),
+            if (ImGui.Combo("快速繳納按鍵", ref selectedKey, _keyCodes.Select(x => x.Label).ToArray(),
                     _keyCodes.Count))
             {
                 _configuration.QuickTurnInKey = _keyCodes[selectedKey].Key;
@@ -404,7 +404,7 @@ internal sealed class ConfigWindow : LWindow, IPersistableWindowConfig
             string[] chatTypeNames = xivChatTypes
                 .Select(t => t.GetAttribute<XivChatTypeInfoAttribute>()?.FancyName ?? t.ToString())
                 .ToArray();
-            if (ImGui.Combo("Chat channel for status updates", ref selectedChatType, chatTypeNames,
+            if (ImGui.Combo("狀態更新的聊天頻道", ref selectedChatType, chatTypeNames,
                     chatTypeNames.Length))
             {
                 _configuration.ChatType = xivChatTypes[selectedChatType];
@@ -416,7 +416,7 @@ internal sealed class ConfigWindow : LWindow, IPersistableWindowConfig
                 .Select(x => x == 1 ? (0, "---") : (x, $"Rank {x}"))
                 .ToList();
             int pauseAtRank = Math.Max(rankUpComboValues.FindIndex(x => x.Rank == _configuration.PauseAtRank), 0);
-            if (ImGui.Combo("Pause when reaching selected FC Rank", ref pauseAtRank,
+            if (ImGui.Combo("達到指定部隊階級時暫停", ref pauseAtRank,
                     rankUpComboValues.Select(x => x.Name).ToArray(),
                     rankUpComboValues.Count))
             {
@@ -425,9 +425,9 @@ internal sealed class ConfigWindow : LWindow, IPersistableWindowConfig
             }
 
             ImGui.SetNextItemWidth(ImGuiHelpers.GlobalScale * 120);
-            string[] behaviorOnOtherWorldNames = { "---", "Show Warning", "Disable Turn-In" };
+            string[] behaviorOnOtherWorldNames = { "---", "顯示警告", "停用繳納" };
             int behaviorOnOtherWorld = (int)_configuration.BehaviorOnOtherWorld;
-            if (ImGui.Combo("Behavior when not on Home World", ref behaviorOnOtherWorld,
+            if (ImGui.Combo("不在所屬世界時的行為", ref behaviorOnOtherWorld,
                     behaviorOnOtherWorldNames, behaviorOnOtherWorldNames.Length))
             {
                 _configuration.BehaviorOnOtherWorld = (Configuration.EBehaviorOnOtherWorld)behaviorOnOtherWorld;
@@ -437,7 +437,7 @@ internal sealed class ConfigWindow : LWindow, IPersistableWindowConfig
             ImGui.Separator();
 
             bool disableFrameLimiter = _configuration.DisableFrameLimiter;
-            if (ImGui.Checkbox("Disable the game setting 'Limit frame rate when client is inactive'",
+            if (ImGui.Checkbox("停用遊戲設定「遊戲視窗未啟用時限制幀數」",
                     ref disableFrameLimiter))
             {
                 _configuration.DisableFrameLimiter = disableFrameLimiter;
@@ -447,7 +447,7 @@ internal sealed class ConfigWindow : LWindow, IPersistableWindowConfig
             ImGui.Indent();
             ImGui.BeginDisabled(!disableFrameLimiter);
             bool uncapFrameRate = _configuration.UncapFrameRate;
-            if (ImGui.Checkbox("Set frame rate to uncapped", ref uncapFrameRate))
+            if (ImGui.Checkbox("將幀數設為無上限", ref uncapFrameRate))
             {
                 _configuration.UncapFrameRate = uncapFrameRate;
                 Save();

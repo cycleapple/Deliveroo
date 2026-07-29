@@ -103,7 +103,7 @@ public sealed partial class DeliverooPlugin : IDalamudPlugin
         _chatGui.ChatMessage += ChatMessage;
         _commandManager.AddHandler("/deliveroo", new CommandInfo(ProcessCommand)
         {
-            HelpMessage = "Open the configuration"
+            HelpMessage = "開啟設定"
         });
 
         if (_clientState.IsLoggedIn)
