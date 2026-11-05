@@ -1,0 +1,8 @@
+[
+  {
+    "path": "LLib",
+    "baseCommit": "f1716ee4827e68c0c6a601928cc0b479dd7dbccd",
+    "patch": "patches/81c38144e188f96e.patch",
+    "sha256": "0176e44b9bafeb2a6a8355f172f3dff984d2bf656043ecfd070012509cd45e7b"
+  }
+]

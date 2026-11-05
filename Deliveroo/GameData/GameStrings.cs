@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using Dalamud.Game.Text;
@@ -45,6 +45,9 @@ internal sealed class GameStrings
     private readonly struct ComDefGrandCompanyOfficer(ExcelPage page, uint offset, uint row)
         : IQuestDialogueText, IExcelRow<ComDefGrandCompanyOfficer>
     {
+    public ExcelPage ExcelPage => page;
+    public uint RowOffset => offset;
+
         public uint RowId => row;
 
         public ReadOnlySeString Key => page.ReadString(offset, offset);

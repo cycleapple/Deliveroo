@@ -1,0 +1,95 @@
+diff --git a/DataManagerExtensions.cs b/DataManagerExtensions.cs
+index c0aade1..8e8b7dd 100644
+--- a/DataManagerExtensions.cs
++++ b/DataManagerExtensions.cs
+@@ -1,4 +1,4 @@
+-﻿using System;
++using System;
+ using System.Collections.Generic;
+ using System.Diagnostics.CodeAnalysis;
+ using System.Linq;
+@@ -146,6 +146,9 @@ public interface IQuestDialogueText
+ [Sheet("PleaseSpecifyTheSheetExplicitly")]
+ public readonly struct QuestDialogueText(ExcelPage page, uint offset, uint row) : IQuestDialogueText, IExcelRow<QuestDialogueText>
+ {
++    public ExcelPage ExcelPage => page;
++    public uint RowOffset => offset;
++
+     public uint RowId => row;
+ 
+     public ReadOnlySeString Key => page.ReadString(offset, offset);
+diff --git a/Gear/GearStatsCalculator.cs b/Gear/GearStatsCalculator.cs
+index 832ded0..3da1690 100644
+--- a/Gear/GearStatsCalculator.cs
++++ b/Gear/GearStatsCalculator.cs
+@@ -1,4 +1,4 @@
+-﻿using System;
++using System;
+ using System.Collections.Generic;
+ using System.Diagnostics.CodeAnalysis;
+ using System.Linq;
+@@ -233,6 +233,9 @@ public sealed class GearStatsCalculator
+ public readonly unsafe struct ExtendedBaseParam(ExcelPage page, uint offset, uint row)
+     : IExcelRow<ExtendedBaseParam>
+ {
++    public ExcelPage ExcelPage => page;
++    public uint RowOffset => offset;
++
+     private const int ParamCount = 23;
+ 
+     public uint RowId => row;
+diff --git a/LLib.csproj b/LLib.csproj
+index f44526d..d7d0708 100644
+--- a/LLib.csproj
++++ b/LLib.csproj
+@@ -1,4 +1,4 @@
+-<Project Sdk="Dalamud.NET.Sdk/13.0.0">
++<Project Sdk="Dalamud.NET.Sdk/14.0.1">
+     <PropertyGroup>
+         <Version>1.0</Version>
+         <Platforms>x64</Platforms>
+diff --git a/global.json b/global.json
+index 93681ff..0b82a98 100644
+--- a/global.json
++++ b/global.json
+@@ -1,7 +1,7 @@
+ {
+   "sdk": {
+-    "version": "9.0.0",
++    "version": "10.0.302",
+     "rollForward": "latestMinor",
+     "allowPrerelease": false
+   }
+-}
+\ No newline at end of file
++}
+diff --git a/packages.lock.json b/packages.lock.json
+index 9fbaa06..8f14de8 100644
+--- a/packages.lock.json
++++ b/packages.lock.json
+@@ -1,18 +1,18 @@
+ {
+   "version": 1,
+   "dependencies": {
+-    "net9.0-windows7.0": {
++    "net10.0-windows7.0": {
+       "DalamudPackager": {
+         "type": "Direct",
+-        "requested": "[13.0.0, )",
+-        "resolved": "13.0.0",
+-        "contentHash": "Mb3cUDSK/vDPQ8gQIeuCw03EMYrej1B4J44a1AvIJ9C759p9XeqdU9Hg4WgOmlnlPe0G7ILTD32PKSUpkQNa8w=="
++        "requested": "[14.0.1, )",
++        "resolved": "14.0.1",
++        "contentHash": "y0WWyUE6dhpGdolK3iKgwys05/nZaVf4ZPtIjpLhJBZvHxkkiE23zYRo7K7uqAgoK/QvK5cqF6l3VG5AbgC6KA=="
+       },
+       "DotNet.ReproducibleBuilds": {
+         "type": "Direct",
+-        "requested": "[1.2.25, )",
+-        "resolved": "1.2.25",
+-        "contentHash": "xCXiw7BCxHJ8pF6wPepRUddlh2dlQlbr81gXA72hdk4FLHkKXas7EH/n+fk5UCA/YfMqG1Z6XaPiUjDbUNBUzg=="
++        "requested": "[1.2.39, )",
++        "resolved": "1.2.39",
++        "contentHash": "fcFN01tDTIQqDuTwr1jUQK/geofiwjG5DycJQOnC72i1SsLAk1ELe+apBOuZ11UMQG8YKFZG1FgvjZPbqHyatg=="
+       },
+       "JetBrains.Annotations": {
+         "type": "Direct",
